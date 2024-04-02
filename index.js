@@ -37,39 +37,21 @@ for (const folder of commandFolders) {
   }
 }
 
-// 명렁어 리스너
-client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
+const eventsPath = path.join(__dirname, "events");
+const eventFiles = fs
+  .readdirSync(eventsPath)
+  .filter((file) => file.endsWith(".js"));
 
-  const command = interaction.client.commands.get(interaction.commandName);
+for (const file of eventFiles) {
+  const filePath = path.join(eventsPath, file);
+  const event = require(filePath);
 
-  if (!command) {
-    console.error(`No command matching ${interaction.commandName} was found.`);
-    return;
+  if (event.once) {
+    client.once(event.name, (...args) => event.execute(...args));
+  } else {
+    client.on(event.name, (...args) => event.execute(...args));
   }
-
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    console.error(error);
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({
-        content: "There was an error while executing this command!",
-        ephemeral: true,
-      });
-    } else {
-      await interaction.reply({
-        content: "There was an error while excuting this command!",
-        ephemeral: true,
-      });
-    }
-  }
-});
-
-// 디스코드봇이 준비되면 실행하는 코드(실행 최초에만)
-client.once(Events.ClientReady, (readyClient) => {
-  console.log(`Ready! ${readyClient.user.tag}`);
-});
+}
 
 // 클라이언트 토큰으로 디스코드 로그인
 client.login(process.env.DISCORD_TOKEN);
