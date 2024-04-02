@@ -11,7 +11,7 @@ require("dotenv").config();
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 // 클라이언트 객체에 커맨드 추가
-client.command = new Collection();
+client.commands = new Collection();
 
 // 명령어 파일 동적 검색
 const foldersPath = path.join(__dirname, "commands");
