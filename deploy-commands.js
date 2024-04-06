@@ -28,7 +28,7 @@ for (const folder of commandFolders) {
   }
 }
 
-const rest = new REST().setToken(DISCORD_TOKEN);
+const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
   try {
@@ -37,15 +37,18 @@ const rest = new REST().setToken(DISCORD_TOKEN);
     );
 
     // 개발서버 배포
-    const data = await rest.put(
-      Routes.applicationGuildCommands(DISCORD_CLIENT_ID, DISCORD_GUILD_ID),
-      { body: commands }
-    );
+    // const data = await rest.put(
+    //   Routes.applicationGuildCommands(
+    //     process.env.DISCORD_CLIENT_ID,
+    //     process.env.DISCORD_GUILD_ID
+    //   ),
+    //   { body: commands }
+    // );
 
     // 전역 배포
-    // const data = await rest.put(Routes.applicationCommand(DISCORD_CLIENT_ID), {
-    //   body: commands,
-    // });
+    const data = await rest.put(Routes.applicationCommand(DISCORD_CLIENT_ID), {
+      body: commands,
+    });
 
     console.log(
       `Successfully reloaded ${data.length} application (/) commands.`
