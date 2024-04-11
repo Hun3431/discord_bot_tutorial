@@ -46,9 +46,12 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
     // );
 
     // 전역 배포
-    const data = await rest.put(Routes.applicationCommand(DISCORD_CLIENT_ID), {
-      body: commands,
-    });
+    const data = await rest.put(
+      Routes.applicationCommands(process.env.DISCORD_CLIENT_ID),
+      {
+        body: commands,
+      }
+    );
 
     console.log(
       `Successfully reloaded ${data.length} application (/) commands.`
